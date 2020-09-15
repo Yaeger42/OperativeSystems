@@ -29,10 +29,3 @@ def residue(a, b):
         return int(a % b)
     except ZeroDivisionError:
         print("No division by 0 is allowed")
-
-
-
-#x = Register("Edgar", 15, 1)
-
-#print(x.name)
-#print(x.max_ex_time)
