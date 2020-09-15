@@ -1,17 +1,15 @@
 class Register:
     
-    def __init__(self, id:int, name, operation, max_ex_time:int ):
+    def __init__(self, id:int, name, operation, max_ex_time:int, a:int = None, b:int = None ):
         self.id = id
         self.name = name
         self.operation = operation
         self.max_ex_time = int(max_ex_time)
-        
-
 
 def multiply(a, b):
     return a * b
 
-def sum(a, b):
+def add(a, b):
     return a + b
 
 def substract(a, b):
@@ -28,7 +26,7 @@ def divide(a, b):
 
 def residue(a, b):
     try:
-        return a % b
+        return int(a % b)
     except ZeroDivisionError:
         print("No division by 0 is allowed")
 

@@ -1,7 +1,9 @@
 from model import Register
+from model import multiply, add, divide, multiply, power, residue, substract
+
 registers = []
 
-def isIdValid(id):
+def isIdValid(id:int = 1):
     if not registers:
         return True
     else:
@@ -11,29 +13,79 @@ def isIdValid(id):
             else: 
                 return True
 
-def lotSize(r = []):
-    max_size = 4
-    lot_size = len(r)
-    new_lot = []
-    if lot_size > max_size:
-        new_lot_size = int(lot_size / max_size)
+
+def operations_menu():
+    print("1. Addition \n 2. Substract \n 3. Multiply(*) \n 4. Divide(/) \n 5. Power(**) \n 6. Modulo(%)")
+    option = int(input("Enter the number of operation you'd like to do: "))
+    
+
+    if option == 1:
+        a = int(input("Enter the first number: "))
+        b = int(input("Enter the second number: "))
+        res = add(a, b)   
+    elif option ==  2:
+        a = int(input("Enter the first number: "))
+        b = int(input("Enter the second number: "))
+        res = substract(a, b)
+    elif option ==  3:
+        a = int(input("Enter the first number: "))
+        b = int(input("Enter the second number: "))
+        res = multiply(a, b)
+    elif option ==  4:
+        a = int(input("Enter the first number: "))
+        b = int(input("Enter the second number: "))
+        res = divide(a, b)
+    elif option ==  5:
+        a = int(input("Enter the first number: "))
+        b = int(input("Enter the second number: "))
+        res = power(a, b)
+
+    elif option ==  6:
+        a = int(input("Enter the first number: "))
+        b = int(input("Enter the second number: "))
+        res = residue(a, b)
+    
+    return res
+
+def register_menu():
+    processes = int(input("Enter the number of processes: "))
+    lot_number = processes/4
+    remaining = residue(processes, 4)
+    total_lots = int(lot_number + remaining)
+    completed_lots = 0
+    completed_processes = 0
+    remaining_processes = processes
+    id = isIdValid(1)
+    while completed_lots != total_lots and remaining_processes != 0:
+        for i in range(0, processes):
+            id = int(input("Enter the id: "))
+            if isIdValid(id):
+                name = input("Enter the name: ")
+                operation = operations_menu()
+                max_ex_time = int(input("Enter the maxmimum operation time: "))
+                register = Register(id=id, name=name, operation=operation, max_ex_time=max_ex_time)
+                registers.append(register)
+        remaining_processes -=1
+        completed_processes +=1 
+    if completed_processes == 4:
+        completed_lots += 1
+        completed_processes = 0
+    
+        for x in registers:
+            print(f'Id: {x.id}')
+            print(f'Name: {x.name}') 
+            print(f'Operation: {x.operation}')
+            print(f'TME: {x.max_ex_time}')
+            print("*------*" *5)
+        print(f"Initial processes: {processes}")
+        print(f'Remaining processes: {remaining_processes}')
+        print(f'Total lots: {total_lots}')
+        print(f'Completed lots: {completed_lots}')
+        print(f'Completed processes: {completed_processes}')
+
+    if completed_lots == total_lots:
+        break
+    
 
 
-for i in range(1, 3):
-    id = int(input("Enter the id: "))
-    if isIdValid(id):
-        name = input("Enter the name: ")
-        operation = str(input("Enter the operation to do (+ * / ** %): "))
-        max_ex_time = int(input("Enter the maxmimum operation time: "))
-        register = Register(id=id, name=name, operation=operation, max_ex_time=max_ex_time)
-        registers.append(register)
-    else:
-        print(f'Error: {id} already exists')
-
-
-for x in registers:
-    print(f'Id: {x.id}')
-    print(f'Name: {x.name}') 
-    print(f'Operation: {x.operation}')
-    print(f'TME: {x.max_ex_time}')
-    print("*" *5)
+register_menu()
