@@ -1,7 +1,17 @@
 from model import Register
-from model import multiply, add, divide, multiply, power, residue, substract
+from model import multiply, add, divide, multiply, power, residue, subtract
+from time import sleep
 
 registers = []
+
+
+def time_calculation(remaining_time):
+    global_time = remaining_time
+    current_process_time = 0
+    time.sleep(current_process_time) 
+    
+
+
 
 def isIdValid(id:int = 1):
     if not registers:
@@ -15,7 +25,7 @@ def isIdValid(id:int = 1):
 
 
 def operations_menu():
-    print("1. Addition \n 2. Substract \n 3. Multiply(*) \n 4. Divide(/) \n 5. Power(**) \n 6. Modulo(%)")
+    print("1. Addition \n 2. Subtract \n 3. Multiply(*) \n 4. Divide(/) \n 5. Power(**) \n 6. Modulo(%)")
     option = int(input("Enter the number of operation you'd like to do: "))
     
 
@@ -26,7 +36,7 @@ def operations_menu():
     elif option ==  2:
         a = int(input("Enter the first number: "))
         b = int(input("Enter the second number: "))
-        res = substract(a, b)
+        res = subtract(a, b)
     elif option ==  3:
         a = int(input("Enter the first number: "))
         b = int(input("Enter the second number: "))
