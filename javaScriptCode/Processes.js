@@ -8,37 +8,37 @@ class Register {
 }
 
 function multiply(a, b){
-        return this.a * this.b
+        return a * b
     }
 
 function add(a, b){
-        return this.a + this.b
+        return a + b
     }
 
 function subtract(a, b){
-        return this.a - this.b
+        return a - b
     }
 
 function divide(a, b){
-        if(this.b === 0){
+        if(b === 0){
             console.log('Division by 0 is not allowed.')
             return null
         }
         else {
-            return this.a / this.b
+            return a / b
         }
     }
 
 function modulo(a, b){
-        if(this.b === 0){
-            console.log('Division by 0 is not allowed.')
-            return null
-        }
-        else {
-            return this.a % this.b
-        }
+    if(b === 0){
+        console.log('Division by 0 is not allowed.')
+        return null
     }
+    else {
+        return a % b
+    }
+}
 
 function power(a, b) {
-        return Math.pow(this.a, this.b)
-    }
+    return Math.pow(a, b)
+}

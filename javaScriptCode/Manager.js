@@ -1,9 +1,9 @@
-import {Register} from './javaScriptCode/Processes'
-import {multiply, add, subtract, divide, modulo, power} from './javaScriptCode/Processes'
+import {Register} from '../javaScriptCode/Processes'
+
 const doc = document.getElementById("processes")
 
 
-register = Register
+register = new Register ()
 registers = []
 
 function isIdValid(id = 1){
@@ -22,8 +22,7 @@ function isIdValid(id = 1){
     }
 }
 
-
-function operationsMenu(){
-    let processes = parseInt(doc.value)
-    document.write("Hi ")
-}
+let  result = document.getElementById("processes")
+let b = document.getElementById("getProcess")
+b.addEventListener("click")
+result.innerHTML = `Hi ${result}` 
