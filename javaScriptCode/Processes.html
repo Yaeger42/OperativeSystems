@@ -2,16 +2,42 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../javaScriptCode/css/main.css">
     <title>Practica 1</title>
   </head>
 <body>
-  <div>
-    <input type="number" id="processes", placeholder="processes">
-    <input type="button" value="process" id="getProcess">
+  <div id="processDiv">
+    <p>Enter the total processes: </p>
+    <input type="number" id="processes" placeholder="processes">
   </div>
-  <div>
+  <div id="resultProcess">
     <p id = "resultado"></p>
   </div>
-  <script type="text/javascript" src="Manager.js"></script>
+  <div id="formDiv">
+    <form id ="register">
+      <input type="text" id="regId" placeholder="Id">
+      <input type="text" id="name" placeholder="Name">
+      <p>
+        1. Add <br>
+        2. Multiply <br>
+        3. Subtract <br>
+        4. Divide <br>
+        5. Modulo <br>
+        6. Power <br>
+        <br>Enter the corresponding number to the operation
+        <input type="number" id="operation" placeholder="operation">
+        <input type="number" id="a" placeholder="First value">
+        <input type="number" id="b" placeholder="Second value">
+      </p>
+      <input type="number" id="max_ex_time" placeholder="Maximum execution time">
+      <input type="button" id="register" value="Submit" onclick="totalForms();"> 
+    </form>
+    <div class="Registers">
+      <p id ="RegistersForms"></p>
+  </div>
+  </div>
+    <script type="text/javascript" src="Processes.js"></script>
+    <script type="text/javascript" src="Manager.js"></script>
   </body>
 </html>
