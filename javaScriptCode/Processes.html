@@ -3,20 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../javaScriptCode/css/main.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <title>Practica 1</title>
   </head>
 <body>
   <div id="processDiv">
-    <p id="processDiv-p">Enter the total processes: </p>
-    <input type="number" id="processes" placeholder="processes">
+    <a id="processDiv-p">Total processes</a>
+    <br>
+    <input type="number" id="processes" placeholder="Processes">
   </div>
   <div id="resultProcess">
     <p id = "resultado"></p>
   </div>
   <div id="formDiv">
     <form id ="register">
+      <p>Id</p>
       <input type="text" id="regId" placeholder="Id">
+      <p>Name</p>
       <input type="text" id="name" placeholder="Name">
       <p>
         1. Add <br>
@@ -25,18 +28,30 @@
         4. Divide <br>
         5. Modulo <br>
         6. Power <br>
-        <br>Enter the corresponding number to the operation
-        <input type="number" id="operation" placeholder="operation">
+        <p>Enter the corresponding number to the operation</p>
+        <input type="number" id="operation" placeholder="Operation">
+        <p>First value</p>
         <input type="number" id="a" placeholder="First value">
+        <p>Second value</p>
         <input type="number" id="b" placeholder="Second value">
       </p>
+      <p>Execution time</p>
       <input type="number" id="max_ex_time" placeholder="Maximum execution time">
       <input type="button" id="register" value="Submit" onclick="totalForms();"> 
     </form>
+
+
     <div class="Registers" id="RegistersContainer">
       <ul id="Registers-List"></ul>
       <p id="Registers-Overalltime"></p>
-  </div>
+    </div>
+
+    <div class="timer" id="timer" style="visibility: hidden;">
+      <p class="timer-title">Elapsed time</p>
+      <label class="timer-m"id="timer-minutes">00</label>:<label class="timer-s"id="timer-seconds">00</label>
+    </div>
+
+
   </div>
     <script type="text/javascript" src="Processes.js"></script>
     <script type="text/javascript" src="Manager.js"></script>

@@ -74,6 +74,8 @@ function totalForms() {
         document.getElementById("processDiv-p").style.display="none";
         showRegisters()
         calcOverallTime()
+        document.getElementById("timer").style.visibility = "visible";
+        setInterval(setTime, 1000)
     }
     
 }
@@ -83,7 +85,7 @@ function showRegisters() {
     let counter = 1
     registers.forEach(function(register){
         result += `
-        <p>Program counter: ${counter}
+        <p>Program counter: ${counter}</p>
         <li>Id: ${register.id} </li> 
         <li>Name: ${register.name}</li>
         <li>Operation: ${register.operation} </li>
@@ -101,3 +103,26 @@ function calcOverallTime() {
     })
     document.getElementById("Registers-Overalltime").innerHTML = `Overall time: ${overallTime}`
 }
+
+
+// Clock functions start
+
+var minutesLabel = document.getElementById("timer-minutes")
+var secondsLabel = document.getElementById("timer-seconds")
+var totalSeconds = 0
+function setTime() {
+    ++totalSeconds
+    secondsLabel.innerHTML = pad(totalSeconds % 60)
+    minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60))
+}
+
+function pad(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } 
+    else {
+      return valString;
+    }
+  }
+// -----------Time functions end------------//
