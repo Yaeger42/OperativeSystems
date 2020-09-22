@@ -19,32 +19,32 @@ function isIdValid (id) {
     }
 }
 
-function getOperationsResult(){
+function getOperationsResult() {
     let a = parseInt(document.getElementById("a").value)
     let b = parseInt(document.getElementById("b").value)
     let x = parseInt(document.getElementById("operation").value)
     let result = 0
     if (x === 1){
-        result = add(a, b)
+        result = `Sum = ${add(a, b)}`
     }
     else if (x === 2){
-        result = multiply(a, b)
+        result = `Multiplication = ${multiply(a, b)}`
     }
 
     else if (x === 3){
-        result = subtract(a, b)
+        result = `Subtract = ${subtract(a, b)}`
     }
 
     else if (x === 4){
-        result = divide(a, b) 
+        result = `Division = ${divide(a, b) }`
     }
 
     else if (x === 5){
-        result = modulo(a, b)
+        result = `Modulo: ${modulo(a, b)}`
     }
 
     else if (x === 6){
-        result = power(a, b)
+        result = `Power ${power(a, b)}`
     }
     return result
 }
@@ -52,7 +52,7 @@ function getOperationsResult(){
 
 
 
-function totalForms () {
+function totalForms() {
     let processes = parseInt(document.getElementById("processes").value )
     register = new Register ()
     id = parseInt(document.getElementById("regId").value)
@@ -71,16 +71,33 @@ function totalForms () {
     
     if (registers.length === processes) {
         document.getElementById("register").style.display="none";
+        document.getElementById("processDiv-p").style.display="none";
         showRegisters()
+        calcOverallTime()
     }
     
 }
 
-function showRegisters (){
-    registers.forEach(elem => {
-        p = document.getElementById("RegistersForms")
-        p.innerHtml + elem.id
-        p.innerHtml += elem.name 
+function showRegisters() {
+    let result = ''
+    let counter = 1
+    registers.forEach(function(register){
+        result += `
+        <p>Program counter: ${counter}
+        <li>Id: ${register.id} </li> 
+        <li>Name: ${register.name}</li>
+        <li>Operation: ${register.operation} </li>
+        <li>Maximum Execution time: ${register.max_ex_time}</li>
+        <br>`
+        counter ++
     })
+    document.getElementById("Registers-List").innerHTML = result
 }
 
+function calcOverallTime() {
+    let overallTime = 0
+    registers.forEach((register) => {
+        overallTime += parseInt(register.max_ex_time)
+    })
+    document.getElementById("Registers-Overalltime").innerHTML = `Overall time: ${overallTime}`
+}
