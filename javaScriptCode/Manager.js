@@ -89,8 +89,7 @@ function showRegisters() {
         <li>Id: ${register.id} </li> 
         <li>Name: ${register.name}</li>
         <li>Operation: ${register.operation} </li>
-        <li>Maximum Execution time: ${register.max_ex_time}</li>
-        <br>`
+        <li>Maximum Execution time: ${register.max_ex_time}</li>`
         counter ++
     })
     document.getElementById("Registers-List").innerHTML = result
