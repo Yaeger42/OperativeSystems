@@ -39,7 +39,7 @@
       <input type="number" id="max_ex_time" placeholder="Maximum execution time">
       <input type="button" id="register" value="Submit" onclick="totalForms();"> 
     </form>
-
+  </div>
 
     <div class="Registers" id="RegistersContainer">
       <ul id="Registers-List"></ul>
@@ -52,8 +52,25 @@
       <label class="timer-m"id="timer-minutes">00</label>:<label class="timer-s"id="timer-seconds">00</label>
     </div>
 
+    <div class="lots" style="visibility: hidden;">
+      <p class="lots-total" id ="lots-total"></p>
+    </div>
 
-  </div>
+    <div class="process-table">
+      <table class="egt" style="width: 75%; visibility: hidden;" id="process-table">
+        <tr>
+          <th>Awaiting</th>
+          <th>Execution</th>
+          <th>Finished</th>
+        </tr>
+        <tr>
+          <td id="Awaiting">All processes</td>
+          <td id="Execution">Execution</td>
+          <td id="Finished">Finished</td>
+        </tr>
+      </table>
+    </div>
+
     <script type="text/javascript" src="Processes.js"></script>
     <script type="text/javascript" src="Manager.js"></script>
   </body>

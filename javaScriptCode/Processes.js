@@ -3,7 +3,7 @@ class Register {
         this.id = id
         this.name = name
         this.operation = operation
-        this.max_ex_time = max_ex_time
+        this.max_ex_time = parseInt(max_ex_time)
     }
 }
 
