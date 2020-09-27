@@ -5,19 +5,14 @@ var awaitingList = []
 
 
 function isIdValid (id) {
-    isValid = false
+    let isValid = false
     if (registers.length === 0){
         isValid = true
         return isValid
     }
     else{
         registers.forEach(elem => {
-            if(elem.id === id){
-                isValid = false
-            }
-            else{
-                isValid = true
-            }
+            isValid = elem.id !== id;
         })
         return isValid
     }
@@ -70,7 +65,7 @@ function totalForms() {
     let b = parseInt(document.getElementById("b").value)
     let x = parseInt(document.getElementById("operation").value)
     let totalLots = 0
-    if (processes % 4  == 0){
+    if (processes % 4  === 0){
         totalLots = processes/4
     }
     else{
@@ -81,7 +76,7 @@ function totalForms() {
         return
     }
     
-    id = parseInt(document.getElementById("regId").value)
+    let id = parseInt(document.getElementById("regId").value)
     if (isIdValid(id) === true) {
         register = new Register ()
         register.id = id
