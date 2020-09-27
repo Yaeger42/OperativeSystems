@@ -94,7 +94,7 @@ function totalForms() {
         document.getElementById("lots-total").style.visibility = "visible"
         document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
         document.getElementById("process-table").style.visibility="visible"
-        setInterval(setTime(), 1000)
+        setInterval(setTime, 1000)
     }
     
 }
@@ -125,6 +125,7 @@ function showRegisters() {
 
 
 function updateTable (){
+    alert("Esta es una ejecucion")
     var executingTable = ''    
     while(awaitingList.length < 4 && registers.length > 0 &&  !activeLot){
         activeLot = true
@@ -236,7 +237,7 @@ function setTime() {
     if (isExecuting) {
         executingRegister.max_ex_time --
     }
-    updateTable()
+   updateTable()
 }
 
 function pad(val) {
