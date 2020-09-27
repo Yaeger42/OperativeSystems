@@ -2,6 +2,10 @@
 var registers = []
 var finishedList = []
 var awaitingList = []
+var executingRegister = new Register()
+var isExecuting = false
+var activeLot = false
+var totalLots = 0
 
 
 function isIdValid (id) {
@@ -51,20 +55,11 @@ function getOperationsResult(a, b, x) {
     return result
 }
 
-
-//procesos / 4 = lotes1
-//procesos % 4 = lotes2
-//lotesTotal = lotes1 + lotes2
-
-
-
-
 function totalForms() {
     let processes = parseInt(document.getElementById("processes").value )
     let a = parseInt(document.getElementById("a").value)
     let b = parseInt(document.getElementById("b").value)
     let x = parseInt(document.getElementById("operation").value)
-    let totalLots = 0
     if (processes % 4  === 0){
         totalLots = processes/4
     }
@@ -94,13 +89,12 @@ function totalForms() {
     if (registers.length === processes) {
         document.getElementById("register").style.display="none";
         document.getElementById("processDiv-p").style.display="none";
-        updateTable()
         calcOverallTime()
         document.getElementById("timer").style.visibility = "visible";
         document.getElementById("lots-total").style.visibility = "visible"
         document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
         document.getElementById("process-table").style.visibility="visible"
-        setInterval(setTime, 1000)
+        setInterval(setTime(), 1000)
     }
     
 }
@@ -131,45 +125,38 @@ function showRegisters() {
 
 
 function updateTable (){
-    //var awaitingTable = ''
-    var isExecuting = false;
-    var executingTable = ''
-    let executingRegister = new Register()
-    
-    while(awaitingList.length < 4 && registers.length > 0){
+    var executingTable = ''    
+    while(awaitingList.length < 4 && registers.length > 0 &&  !activeLot){
+        activeLot = true
         awaitingList.push(registers[0])
         registers.shift()
     }
     
     fillWaitRow(awaitingList)
-
-    //document.getElementById("Awaiting").innerHTML = awaitingTable
     if(isExecuting != true){
         isExecuting = true
         executingRegister = awaitingList[0]
         awaitingList.shift()
-        let miPrimeraPromise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                    resolve(executingRegister.max_ex_time -= 1) // ¡Todo salió bien!
-                }, 1000);
-        });
-        while(executingRegister.max_ex_time != 0){
+        fillExecutionRow(executingRegister)
+    }
+
+    else{
+        if (executingRegister.max_ex_time === 0){
+            isExecuting = false
+            finishedList.push(executingRegister)
             fillExecutionRow(executingRegister)
-            executeProcess(executingRegister.max_ex_time)
-            miPrimeraPromise.then(
-                executingRegister.max_ex_time = executeProcess(executingRegister.max_ex_time)
-            )
-            .catch(
-                (reason) => {
-                    console.log('Manejar promesa rechazada (' + reason + ') aquí.')
-                });
+            executingRegister = new Register ()
         }
     }
 
-}
+    if (finishedList.length>0) {
+        fillFinishedRow(finishedList)
+    }
 
-function executeProcess(time){
-    return time-1
+    if(awaitingList.length === 0 && isExecuting === false){
+        activeLot = false
+        totalLots -=1
+    }
 }
 
 function fillWaitRow(awaitingList){
@@ -191,6 +178,7 @@ function fillWaitRow(awaitingList){
 }
 
 function fillExecutionRow(executingRegister){
+    if(isExecuting) {
     let executingTable = ''
     executingTable += `
         <td>Id: ${executingRegister.id} </td> 
@@ -202,6 +190,7 @@ function fillExecutionRow(executingRegister){
         <td>Maximum Execution time: ${executingRegister.max_ex_time}</td>
         <br> `
     document.getElementById("Execution").innerHTML = executingTable
+    }
 }
 
 
@@ -226,12 +215,6 @@ function clearTable() {
     document.getElementById("Finish").innerHTML = ''
 }
 
-
-
-
-// Clock functions start
-
-
 function calcOverallTime() {
     let overallTime = 0
     registers.forEach((register) => {
@@ -240,13 +223,20 @@ function calcOverallTime() {
     document.getElementById("Registers-Overalltime").innerHTML = `Overall time: ${overallTime}`
 }
 
+
+// Clock functions start
 var minutesLabel = document.getElementById("timer-minutes")
 var secondsLabel = document.getElementById("timer-seconds")
 var totalSeconds = 0
+
 function setTime() {
     ++totalSeconds
     secondsLabel.innerHTML = pad(totalSeconds % 60)
     minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60))
+    if (isExecuting) {
+        executingRegister.max_ex_time --
+    }
+    updateTable()
 }
 
 function pad(val) {
@@ -257,5 +247,25 @@ function pad(val) {
     else {
       return valString;
     }
-  }
+}
 // -----------Time functions end------------//
+
+//Kind of unused code
+        /*
+        let miPrimeraPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                    resolve(executingRegister.max_ex_time -= 1) // ¡Todo salió bien!
+                }, 1000);
+        });
+        while(executingRegister.max_ex_time != 0){
+            fillExecutionRow(executingRegister)
+            executeProcess(executingRegister.max_ex_time)
+            miPrimeraPromise.then(
+                executingRegister.max_ex_time = executeProcess(executingRegister.max_ex_time)
+            )
+            .catch(
+                (reason) => {
+                    console.log('Manejar promesa rechazada (' + reason + ') aquí.')
+                });
+        }
+        */
