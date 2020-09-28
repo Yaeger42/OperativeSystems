@@ -8,6 +8,7 @@ var activeLot = false
 var totalLots = 0
 
 
+
 function isIdValid (id) {
     let isValid = false
     if (registers.length === 0){
@@ -94,7 +95,10 @@ function totalForms() {
         document.getElementById("lots-total").style.visibility = "visible"
         document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
         document.getElementById("process-table").style.visibility="visible"
-        setInterval(setTime, 1000)
+        let myInterval = setInterval(setTime, 1000)
+        if (registers.length === 0 && awaitingList.length === 0 && !isExecuting){
+            clearInterval(myInterval)
+        }
     }
     
 }
@@ -102,8 +106,9 @@ function totalForms() {
 
 function updateTable (){    
     while(awaitingList.length <= 4 && registers.length > 0 &&  !activeLot){
-        if (registers.length <= 0 || awaitingList.length >= 4){
+        if (registers.length === 0 || awaitingList.length === 4){
             activeLot = true
+            break
         }
         awaitingList.push(registers[0])
         registers.shift()
@@ -129,12 +134,16 @@ function updateTable (){
 
     if (finishedList.length>0) {
         fillFinishedRow(finishedList)
+        fillExecutionRow(executingRegister)
     }
 
     if(awaitingList.length === 0 && isExecuting === false){
         activeLot = false
         totalLots -=1
+        document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
     }
+
+
 }
 
 function fillWaitRow(awaitingList){
@@ -154,8 +163,8 @@ function fillWaitRow(awaitingList){
 }
 
 function fillExecutionRow(executingRegister){
-    if(isExecuting) {
     let executingTable = ''
+    if(isExecuting) {
     executingTable += `
         <td>Id: ${executingRegister.id} </td> 
         <br>
@@ -164,6 +173,10 @@ function fillExecutionRow(executingRegister){
         <td>Maximum Execution time: ${executingRegister.max_ex_time}</td>
         <br> `
     document.getElementById("Execution").innerHTML = executingTable
+    }
+    else{
+        executingTable = ''
+        document.getElementById("Execution").innerHTML = executingTable
     }
 }
 
