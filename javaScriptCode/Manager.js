@@ -98,37 +98,13 @@ function totalForms() {
     }
     
 }
-//3 en espera
-//1 en ejecucion
-/*
-function showRegisters() {
-    let result = ''
-    let counter = 1
-    let executionRegister = new Register()
-    //document.getElementById("RemainingProcesses").innerHTML = result
-   for(let i =0; i < registers.length; i++){
-       result +=`
-       <td>Id: ${registers[i].id} </td> 
-       <br>
-       <td>Name: ${registers[i].name}</td>
-       <br>
-       <td>Operation: ${registers[i].operation} </td>
-       <br>
-       <td>Maximum Execution time: ${registers[i].max_ex_time}</td>
-       <p>---------------------</p>
-       <br>`
-   }
-
-}
-*/
 
 
-
-function updateTable (){
-    alert("Esta es una ejecucion")
-    var executingTable = ''    
-    while(awaitingList.length < 4 && registers.length > 0 &&  !activeLot){
-        activeLot = true
+function updateTable (){    
+    while(awaitingList.length <= 4 && registers.length > 0 &&  !activeLot){
+        if (registers.length <= 0 || awaitingList.length >= 4){
+            activeLot = true
+        }
         awaitingList.push(registers[0])
         registers.shift()
     }
@@ -142,6 +118,7 @@ function updateTable (){
     }
 
     else{
+        fillExecutionRow(executingRegister)
         if (executingRegister.max_ex_time === 0){
             isExecuting = false
             finishedList.push(executingRegister)
@@ -162,13 +139,11 @@ function updateTable (){
 
 function fillWaitRow(awaitingList){
     let awaitingTable = ''
-    for(let a = 0; a<awaitingList.length; a++){ 
+    for(let a = 0; a < awaitingList.length; a++){ 
         awaitingTable += `
         <td>Id: ${awaitingList[a].id} </td> 
        <br>
        <td>Name: ${awaitingList[a].name}</td>
-       <br>
-       <td>Operation: ${awaitingList[a].operation} </td>
        <br>
        <td>Maximum Execution time: ${awaitingList[a].max_ex_time}</td>
        <p>---------------------</p>
@@ -186,8 +161,6 @@ function fillExecutionRow(executingRegister){
         <br>
         <td>Name: ${executingRegister.name}</td>
         <br>
-        <td>Operation: ${executingRegister.operation}</td>
-        <br>
         <td>Maximum Execution time: ${executingRegister.max_ex_time}</td>
         <br> `
     document.getElementById("Execution").innerHTML = executingTable
@@ -196,6 +169,7 @@ function fillExecutionRow(executingRegister){
 
 
 function fillFinishedRow(finishedList){
+    let finishedTable = ''
     for(let a = 0; a<finishedList.length; a++){
         finishedTable += ` 
             <td>Id: ${finishedList[a].id} </td> 
@@ -250,23 +224,3 @@ function pad(val) {
     }
 }
 // -----------Time functions end------------//
-
-//Kind of unused code
-        /*
-        let miPrimeraPromise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                    resolve(executingRegister.max_ex_time -= 1) // ¡Todo salió bien!
-                }, 1000);
-        });
-        while(executingRegister.max_ex_time != 0){
-            fillExecutionRow(executingRegister)
-            executeProcess(executingRegister.max_ex_time)
-            miPrimeraPromise.then(
-                executingRegister.max_ex_time = executeProcess(executingRegister.max_ex_time)
-            )
-            .catch(
-                (reason) => {
-                    console.log('Manejar promesa rechazada (' + reason + ') aquí.')
-                });
-        }
-        */
