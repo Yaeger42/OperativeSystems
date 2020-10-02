@@ -7,8 +7,14 @@ var isExecuting = false
 var activeLot = false
 var totalLots = 0
 var id = 1
+var keys = {
+    E:69,
+    W:87,
+    P:80,
+    C:67
+}
 
-function getRandomExTime(min = 7, max = 14){
+function getRandomExTime(min = 7, max = 16){
     min = Math.ceil(min)
     max = Math.ceil(max)
     return Math.floor(Math.random() * (max - min + 1)) + min
