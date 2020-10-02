@@ -6,9 +6,17 @@ var executingRegister = new Register()
 var isExecuting = false
 var activeLot = false
 var totalLots = 0
+var id = 1
 
+function getRandomExTime(min = 7, max = 14){
+    min = Math.ceil(min)
+    max = Math.ceil(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
+console.log(getRandomExTime())
 
+/*
 function isIdValid (id) {
     let isValid = false
     if (registers.length === 0){
@@ -22,6 +30,7 @@ function isIdValid (id) {
         return isValid
     }
 }
+*/
 
 function getOperationsResult(a, b, x) {
 
@@ -72,20 +81,14 @@ function totalForms() {
         return
     }
     
-    let id = parseInt(document.getElementById("regId").value)
-    if (isIdValid(id) === true) {
         register = new Register ()
         register.id = id
-        register.name = document.getElementById("name").value
         register.operation = getOperationsResult(a, b, x)
-        register.max_ex_time = document.getElementById("max_ex_time").value
+        register.max_ex_time = getRandomExTime()
         registers.push(register)
         document.getElementById("register").reset()
         document.getElementById("processes").style.visibility = "hidden";
-    }
-    else {
-        document.getElementById("regId").value = "Enter a valid Id"
-    }
+        id += 1
     
     if (registers.length === processes) {
         document.getElementById("register").style.display="none";
@@ -152,8 +155,6 @@ function fillWaitRow(awaitingList){
         awaitingTable += `
         <td>Id: ${awaitingList[a].id} </td> 
        <br>
-       <td>Name: ${awaitingList[a].name}</td>
-       <br>
        <td>Maximum Execution time: ${awaitingList[a].max_ex_time}</td>
        <p>---------------------</p>
        <br>
@@ -167,8 +168,6 @@ function fillExecutionRow(executingRegister){
     if(isExecuting) {
     executingTable += `
         <td>Id: ${executingRegister.id} </td> 
-        <br>
-        <td>Name: ${executingRegister.name}</td>
         <br>
         <td>Maximum Execution time: ${executingRegister.max_ex_time}</td>
         <br> `
@@ -186,8 +185,6 @@ function fillFinishedRow(finishedList){
     for(let a = 0; a<finishedList.length; a++){
         finishedTable += ` 
             <td>Id: ${finishedList[a].id} </td> 
-            <br>
-            <td>Name: ${finishedList[a].name}</td>
             <br>
             <td>Operation: ${finishedList[a].operation} </td>
             <br>

@@ -8,21 +8,16 @@
     <title>Practica 1</title>
   </head>
 <body>
+
   <div id="processDiv">
     <a id="processDiv-p">Total processes</a>
     <br>
     <input type="number" id="processes" placeholder="Processes">
   </div>
-  <div id="resultProcess">
-    <p id = "resultado"></p>
-  </div>
+  
   <div id="formDiv">
     <form id ="register">
-      <p>Id</p>
-      <input type="text" id="regId" placeholder="Id">
-      <p>Name</p>
-      <input type="text" id="name" placeholder="Name">
-      <p>
+      <br>
         1. Add <br>
         2. Multiply <br>
         3. Subtract <br>
@@ -36,8 +31,6 @@
         <p>Second value</p>
         <input type="number" id="b" placeholder="Second value">
       </p>
-      <p>Execution time</p>
-      <input type="number" id="max_ex_time" placeholder="Maximum execution time">
       <input type="button" id="registerbutton" value="Submit" onclick="totalForms();">
     </form>
   </div>
@@ -56,7 +49,6 @@
     <div class="lots" style="visibility: hidden;">
       <p class="lots-total" id ="lots-total"></p>
     </div>
-
 
     <div class="process-table">
       <table class="table" style="width: 75%; visibility: hidden;" id="process-table">
