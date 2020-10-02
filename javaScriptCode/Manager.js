@@ -14,24 +14,6 @@ function getRandomExTime(min = 7, max = 14){
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-console.log(getRandomExTime())
-
-/*
-function isIdValid (id) {
-    let isValid = false
-    if (registers.length === 0){
-        isValid = true
-        return isValid
-    }
-    else{
-        registers.forEach(elem => {
-            isValid = elem.id !== id;
-        })
-        return isValid
-    }
-}
-*/
-
 function getOperationsResult(a, b, x) {
 
     let result = 0
