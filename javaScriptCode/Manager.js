@@ -8,10 +8,28 @@ var activeLot = false
 var totalLots = 0
 var id = 1
 var keys = {
-    E:69,
-    W:87,
-    P:80,
-    C:67
+    e:69, // The running process will go to the queue
+    w:87, //Error - finish the process - error instead of result in finished column
+    p:80, //pause 
+    c:67 // continue
+}
+
+
+function sendToAwaitingList() {
+    
+   awaitingList.push(executingRegister)
+   executingRegister = awaitingList[0]
+   awaitingList.shift()
+   fillWaitRow(awaitingList)
+   fillExecutionRow(executingRegister)
+   isExecuting = true
+   if (executingRegister.max_ex_time === 0){
+        isExecuting = false
+        finishedList.push(executingRegister)
+        fillExecutionRow(executingRegister)
+        executingRegister = new Register ()
+    }
+    
 }
 
 function getRandomExTime(min = 7, max = 16){
@@ -136,7 +154,7 @@ function updateTable (){
 
 
 }
-
+// -----------Fill rows functions ----------- //
 function fillWaitRow(awaitingList){
     let awaitingTable = ''
     for(let a = 0; a < awaitingList.length; a++){ 
@@ -188,6 +206,8 @@ function clearTable() {
     document.getElementById("Finish").innerHTML = ''
 }
 
+// -----------Fill rows functions end ----------- //
+
 function calcOverallTime() {
     let overallTime = 0
     registers.forEach((register) => {
@@ -197,7 +217,7 @@ function calcOverallTime() {
 }
 
 
-// Clock functions start
+// -----------Clock functions start-----------//
 var minutesLabel = document.getElementById("timer-minutes")
 var secondsLabel = document.getElementById("timer-seconds")
 var totalSeconds = 0
@@ -222,3 +242,27 @@ function pad(val) {
     }
 }
 // -----------Time functions end------------//
+
+// ----------- KeyPressed ----------- //
+document.onkeypress = function (event) {
+    event = event || window.event
+    switch(event.keyCode){
+
+        case keys.e:
+            console.log("E was pressed")
+            sendToAwaitingList()
+            break
+        
+        case keys.w:
+            console.log ("W was pressed")
+            break;
+
+        case keys.p:
+            console.log("P was pressed")
+            break
+
+        case keys.c:
+            console.log("C was pressed")
+            break
+    }
+}
