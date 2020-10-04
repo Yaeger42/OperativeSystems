@@ -195,15 +195,17 @@ function calcOverallTime() {
 var minutesLabel = document.getElementById("timer-minutes")
 var secondsLabel = document.getElementById("timer-seconds")
 var totalSeconds = 0
+var timer_is_on = false
 
 function setTime() {
+    timer_is_on = true
     ++totalSeconds
     secondsLabel.innerHTML = pad(totalSeconds % 60)
     minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60))
     if (isExecuting) {
         executingRegister.max_ex_time --
     }
-   updateTable()
+       updateTable()
 }
 
 function pad(val) {
@@ -215,34 +217,17 @@ function pad(val) {
       return valString;
     }
 }
+
+/*
+function stopTimer() {
+    timer_is_on = 0
+    clearTimeout(totalSeconds)
+}
+*/
+
 // -----------Time functions end------------//
 
-// ----------- KeyPressed ----------- //
-document.onkeypress = function (event) {
-    event = event || window.event
-    switch(event.keyCode){
-
-        case keys.e:
-            console.log("E was pressed")
-            sendToAwaitingList()
-            break
-        
-        case keys.w:
-            console.log ("W was pressed")
-            sendProcessToError()
-            break;
-
-        case keys.p:
-            console.log("P was pressed")
-            break
-
-        case keys.c:
-            console.log("C was pressed")
-            break
-    }
-}
-
-// Main Function
+// -----------Main Function ----------- //
 function totalForms() {
     let processes = parseInt(document.getElementById("processes").value )
     let a = parseInt(document.getElementById("a").value)
@@ -282,4 +267,30 @@ function totalForms() {
         }
     }
     
+}
+// ----------- Main function End -----------//
+
+// ----------- KeyPressed ----------- //
+document.onkeypress = function (event) {
+    event = event || window.event
+    switch(event.keyCode){
+
+        case keys.e:
+            console.log("E was pressed")
+            sendToAwaitingList()
+            break
+        
+        case keys.w:
+            console.log ("W was pressed")
+            sendProcessToError()
+            break;
+
+        case keys.p:
+            console.log("P was pressed")
+            break
+
+        case keys.c:
+            console.log("C was pressed")
+            break
+    }
 }
