@@ -16,7 +16,6 @@ var keys = {
 
 
 function sendToAwaitingList() {
-    
    awaitingList.push(executingRegister)
    executingRegister = awaitingList[0]
    awaitingList.shift()
@@ -28,8 +27,25 @@ function sendToAwaitingList() {
         finishedList.push(executingRegister)
         fillExecutionRow(executingRegister)
         executingRegister = new Register ()
-    }
-    
+    }  
+}
+// Also finishes the "execution"
+function sendProcessToError(){
+    executingRegister.operation = "Error"
+    executingRegister.max_ex_time = "Error"
+    finishedList.push(executingRegister)
+    executingRegister = awaitingList [0]
+    awaitingList.shift()
+    fillFinishedRow(finishedList)
+    fillWaitRow(awaitingList)
+    fillExecutionRow(executingRegister)
+    isExecuting = true 
+    if (executingRegister.max_ex_time === 0){
+        isExecuting = false
+        finishedList.push(executingRegister)
+        fillExecutionRow(executingRegister)
+        executingRegister = new Register ()
+    } 
 }
 
 function getRandomExTime(min = 7, max = 16){
@@ -71,48 +87,6 @@ function getOperationsResult(a, b, x) {
     return result
 }
 
-function totalForms() {
-    let processes = parseInt(document.getElementById("processes").value )
-    let a = parseInt(document.getElementById("a").value)
-    let b = parseInt(document.getElementById("b").value)
-    let x = parseInt(document.getElementById("operation").value)
-    if (processes % 4  === 0){
-        totalLots = processes/4
-    }
-    else{
-        totalLots = parseInt((processes/4) +1)
-    }
-    if((x === 4 || x===5) && (a === 0 || b === 0)){
-        alert("Division by 0 is not allowed")
-        return
-    }
-    
-        register = new Register ()
-        register.id = id
-        register.operation = getOperationsResult(a, b, x)
-        register.max_ex_time = getRandomExTime()
-        registers.push(register)
-        document.getElementById("register").reset()
-        document.getElementById("processes").style.visibility = "hidden";
-        id += 1
-    
-    if (registers.length === processes) {
-        document.getElementById("register").style.display="none";
-        document.getElementById("processDiv-p").style.display="none";
-        calcOverallTime()
-        document.getElementById("timer").style.visibility = "visible";
-        document.getElementById("lots-total").style.visibility = "visible"
-        document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
-        document.getElementById("process-table").style.visibility="visible"
-        let myInterval = setInterval(setTime, 1000)
-        if (registers.length === 0 && awaitingList.length === 0 && !isExecuting){
-            clearInterval(myInterval)
-        }
-    }
-    
-}
-
-
 function updateTable (){    
     while(awaitingList.length <= 4 && registers.length > 0 &&  !activeLot){
         if (registers.length === 0 || awaitingList.length === 4){
@@ -151,9 +125,9 @@ function updateTable (){
         totalLots -=1
         document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
     }
-
-
 }
+
+
 // -----------Fill rows functions ----------- //
 function fillWaitRow(awaitingList){
     let awaitingTable = ''
@@ -255,6 +229,7 @@ document.onkeypress = function (event) {
         
         case keys.w:
             console.log ("W was pressed")
+            sendProcessToError()
             break;
 
         case keys.p:
@@ -265,4 +240,46 @@ document.onkeypress = function (event) {
             console.log("C was pressed")
             break
     }
+}
+
+// Main Function
+function totalForms() {
+    let processes = parseInt(document.getElementById("processes").value )
+    let a = parseInt(document.getElementById("a").value)
+    let b = parseInt(document.getElementById("b").value)
+    let x = parseInt(document.getElementById("operation").value)
+    if (processes % 4  === 0){
+        totalLots = processes/4
+    }
+    else{
+        totalLots = parseInt((processes/4) +1)
+    }
+    if((x === 4 || x===5) && (a === 0 || b === 0)){
+        alert("Division by 0 is not allowed")
+        return
+    }
+    
+        register = new Register ()
+        register.id = id
+        register.operation = getOperationsResult(a, b, x)
+        register.max_ex_time = getRandomExTime()
+        registers.push(register)
+        document.getElementById("register").reset()
+        document.getElementById("processes").style.visibility = "hidden";
+        id += 1
+    
+    if (registers.length === processes) {
+        document.getElementById("register").style.display="none";
+        document.getElementById("processDiv-p").style.display="none";
+        calcOverallTime()
+        document.getElementById("timer").style.visibility = "visible";
+        document.getElementById("lots-total").style.visibility = "visible"
+        document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
+        document.getElementById("process-table").style.visibility="visible"
+        let myInterval = setInterval(setTime, 1000)
+        if (registers.length === 0 && awaitingList.length === 0 && !isExecuting){
+            clearInterval(myInterval)
+        }
+    }
+    
 }
