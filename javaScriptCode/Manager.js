@@ -6,6 +6,7 @@ var executingRegister = new Register()
 var isExecuting = false
 var activeLot = false
 var totalLots = 0
+var myInterval = null
 var id = 1
 var keys = {
     e:69, // The running process will go to the queue
@@ -13,7 +14,7 @@ var keys = {
     p:80, //pause 
     c:67 // continue
 }
-
+var processes
 /*
 let reg1 = new Register()
 reg1.id = 1
@@ -97,21 +98,27 @@ function sendToAwaitingList() {
 }
 // Also finishes the "execution"
 function sendProcessToError(){
-    executingRegister.operation = "Error"
-    executingRegister.max_ex_time = "Error"
-    finishedList.push(executingRegister)
-    executingRegister = awaitingList [0]
-    awaitingList.shift()
-    fillFinishedRow(finishedList)
-    fillWaitRow(awaitingList)
-    fillExecutionRow(executingRegister)
-    isExecuting = true 
-    if (executingRegister.max_ex_time === 0){
-        isExecuting = false
+
+    if (awaitingList.length === 0 && isExecuting === true) {
+        executingRegister.operation = "Error"
+        executingRegister.max_ex_time = "Error"
         finishedList.push(executingRegister)
+        isExecuting = false
+        updateTable()
+    }
+
+    if(awaitingList.length > 0 && isExecuting == true){
+        executingRegister.operation = "Error"
+        executingRegister.max_ex_time = "Error"
+        finishedList.push(executingRegister)
+        executingRegister = awaitingList [0]
+        awaitingList.shift()
+        fillFinishedRow(finishedList)
+        fillWaitRow(awaitingList)
         fillExecutionRow(executingRegister)
-        executingRegister = new Register ()
-    } 
+        isExecuting = true 
+    }
+    updateTable()
 }
 
 function getRandomExTime(min = 7, max = 16){
@@ -164,7 +171,7 @@ function updateTable (){
     }
     
     fillWaitRow(awaitingList)
-    if(isExecuting != true){
+    if(isExecuting != true && awaitingList.length > 0){
         isExecuting = true
         executingRegister = awaitingList[0]
         awaitingList.shift()
@@ -179,6 +186,7 @@ function updateTable (){
             fillExecutionRow(executingRegister)
             executingRegister = new Register ()
         }
+        
     }
 
     if (finishedList.length>0) {
@@ -188,9 +196,18 @@ function updateTable (){
 
     if(awaitingList.length === 0 && isExecuting === false){
         activeLot = false
-        totalLots -=1
+        if(totalLots === 0){
+            totalLots = 0
+        }
+        else{
+            totalLots-=1
+        }
         document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
+        if(finishedList.length === processes) {
+            clearInterval(myInterval)
+        }
     }
+
 }
 
 
@@ -284,17 +301,18 @@ function pad(val) {
     }
 }
 
-function stopTimer(interval) {
+function stopTimer() {
     if (timer_is_executing) {
         timer_is_executing = false
-        clearInterval(interval)
+        clearInterval(myInterval)
+        myInterval = null
     }
 }
 
 function continueTimer() {
     if(!timer_is_executing) {
         timer_is_executing = true
-        setInterval(setTime, 1000)
+        myInterval = setInterval(setTime, 1000)
     }
 }
 
@@ -303,7 +321,7 @@ function continueTimer() {
 // -----------Main Function ----------- //
 function totalForms() {
 
-    let processes = parseInt(document.getElementById("processes").value )
+    processes = parseInt(document.getElementById("processes").value )
     let a = parseInt(document.getElementById("a").value)
     let b = parseInt(document.getElementById("b").value)
     let x = parseInt(document.getElementById("operation").value)
@@ -335,10 +353,7 @@ function totalForms() {
         document.getElementById("lots-total").style.visibility = "visible"
         document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
         document.getElementById("process-table").style.visibility="visible"
-        let myInterval = setInterval(setTime, 1000)
-        if (registers.length === 0 && awaitingList.length === 0 && !isExecuting){
-            clearInterval(myInterval)
-        }
+        myInterval = setInterval(setTime, 1000)
     }
     // Detecting key presses
     document.onkeypress = function (event) {
@@ -346,22 +361,22 @@ function totalForms() {
         switch(event.keyCode){
     
             case keys.e:
-                console.log("E was pressed")
+                console.log("E was pressed - Process was send to the Queue")
                 sendToAwaitingList()
                 break
             
             case keys.w:
-                console.log ("W was pressed")
+                console.log ("W was pressed - Process was send to error")
                 sendProcessToError()
                 break;
     
             case keys.p:
-                console.log("P was pressed")
+                console.log("P was pressed - Pause")
                 stopTimer(myInterval)
                 break
     
             case keys.c:
-                console.log("C was pressed")
+                console.log("C was pressed - Continue")
                 continueTimer()
                 break
         }
