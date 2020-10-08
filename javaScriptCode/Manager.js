@@ -15,7 +15,7 @@ var keys = {
     c:67 // continue
 }
 var processes
-/*
+
 let reg1 = new Register()
 reg1.id = 1
 reg1.a = 2
@@ -74,12 +74,12 @@ registers.push(reg7)
 
 let reg8 = new Register()
 reg8.id = 8
-reg8.a = 49
-reg8.b = 135
-reg7.operation = getOperationsResult(reg8.a, reg8.b, 5)
+reg8.a = 135
+reg8.b = 49
+reg8.operation = getOperationsResult(reg8.a, reg8.b, 3)
 reg8.max_ex_time = getRandomExTime()
 registers.push(reg8)
-*/
+
 
 
 function sendToAwaitingList() {
@@ -249,9 +249,9 @@ function fillFinishedRow(finishedList){
         finishedTable += ` 
             <td>Id: ${finishedList[a].id} </td> 
             <br>
-            <td>Operation: ${finishedList[a].operation} </td>
+            <td>Operation: ${finishedList[a].a}    ${finishedList[a].b} ${finishedList[a].operation}    </td>
             <br>
-            <p>---------------------</p>`
+            <p>---------------------</p>` // Modified the way it showed the operations result to match requirement
     }
 
     document.getElementById("Finished").innerHTML = finishedTable
@@ -322,29 +322,33 @@ function continueTimer() {
 function totalForms() {
 
     processes = parseInt(document.getElementById("processes").value )
-    let a = parseInt(document.getElementById("a").value)
-    let b = parseInt(document.getElementById("b").value)
-    let x = parseInt(document.getElementById("operation").value)
+    // This wasn't needed for P4, but may be useful for debugging purposes
+    //let a = parseInt(document.getElementById("a").value)
+    //let b = parseInt(document.getElementById("b").value)
+    //let x = parseInt(document.getElementById("operation").value)
     if (processes % 4  === 0){
         totalLots = processes/4
     }
     else{
         totalLots = parseInt((processes/4) +1)
     }
+    /*
+    This wasn't needed anymore for the requirements of P4, however it might work for debugging purposes
+
     if((x === 4 || x===5) && (a === 0 || b === 0)){
         alert("Division by 0 is not allowed")
         return
     }
     
-        register = new Register ()
-        register.id = id
-        register.operation = getOperationsResult(a, b, x)
-        register.max_ex_time = getRandomExTime()
-        registers.push(register)
-        document.getElementById("register").reset()
-        document.getElementById("processes").style.visibility = "hidden";
-        id += 1
-    
+    register = new Register ()
+    register.id = id
+    register.operation = getOperationsResult(a, b, x)
+    register.max_ex_time = getRandomExTime()
+    registers.push(register)
+    document.getElementById("register").reset()
+    document.getElementById("processes").style.visibility = "hidden";
+    id += 1
+    */
     if (registers.length === processes) {
         document.getElementById("register").style.display="none";
         document.getElementById("processDiv-p").style.display="none";
