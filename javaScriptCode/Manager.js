@@ -17,71 +17,32 @@ var keys = {
 }
 var processes
 
-let reg1 = new Register()
-reg1.id = 1
-reg1.a = 2
-reg1.b = 3
-reg1.operation = getOperationsResult(reg1.a, reg1.b, 1)
-reg1.max_ex_time = getRandomExTime()
-registers.push(reg1)
+//Generates a Random Operation number to choose between 6 options
+function generateRandomOperation(min = 1, max = 6){
+    min = Math.ceil(min)
+    max = Math.ceil(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
-let reg2 = new Register()
-reg2.id = 2
-reg2.a = 3
-reg2.b = 2
-reg2.operation = getOperationsResult(reg2.a, reg2.b, 2)
-reg2.max_ex_time = getRandomExTime()
-registers.push(reg2)
+//Generates a randomNumber to fill reg.a and reg.b values
+function generateRandomNumber(min = 5, max = 15){
+    min = Math.ceil(min)
+    max = Math.ceil(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
-let reg3 = new Register()
-reg3.id = 3
-reg3.a = 3
-reg3.b = 4
-reg3.operation = getOperationsResult(reg3.a, reg3.b, 3)
-reg3.max_ex_time = getRandomExTime()
-registers.push(reg3)
-
-let reg4 = new Register()
-reg4.id = 4
-reg4.a = 5
-reg4.b = 6
-reg4.operation = getOperationsResult(reg4.a, reg4.b, 4)
-reg4.max_ex_time = getRandomExTime()
-registers.push(reg4)
-
-let reg5 = new Register()
-reg5.id = 5
-reg5.a = 6
-reg5.b = 7
-reg5.operation = getOperationsResult(reg5.a, reg5.b, 5)
-reg5.max_ex_time = getRandomExTime()
-registers.push(reg5)
-
-let reg6 = new Register()
-reg6.id = 6
-reg6.a = 7
-reg6.b = 7
-reg6.operation = getOperationsResult(reg6.a, reg6.b, 6)
-reg6.max_ex_time = getRandomExTime()
-registers.push(reg6)
-
-let reg7 = new Register()
-reg7.id = 7
-reg7.a = 10
-reg7.b = 13
-reg7.operation = getOperationsResult(reg7.a, reg7.b, 1)
-reg7.max_ex_time = getRandomExTime()
-registers.push(reg7)
-
-let reg8 = new Register()
-reg8.id = 8
-reg8.a = 135
-reg8.b = 49
-reg8.operation = getOperationsResult(reg8.a, reg8.b, 3)
-reg8.max_ex_time = getRandomExTime()
-registers.push(reg8)
-
-
+//Generate random registers based on user input number of registers
+function generateRegisters(registersNumber) {
+    for(let i = 1; i <= registersNumber; i++) {
+        reg = new Register()
+        reg.id = i 
+        reg.a = generateRandomOperation()
+        reg.b = generateRandomNumber()
+        reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
+        reg.max_ex_time = getRandomExTime()
+        registers.push(reg)
+    }
+}
 
 function sendToAwaitingList() {
    awaitingList.push(executingRegister)
@@ -323,6 +284,7 @@ function continueTimer() {
 function totalForms() {
 
     processes = parseInt(document.getElementById("processes").value )
+   
 
     if (processes % 4  === 0){
         totalLots = processes/4
@@ -330,6 +292,7 @@ function totalForms() {
     else{
         totalLots = parseInt((processes/4) +1)
     }
+    generateRegisters(processes)
 
     if (registers.length === processes) {
         document.getElementById("register").style.display="none";
