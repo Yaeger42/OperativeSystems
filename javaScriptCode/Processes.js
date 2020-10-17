@@ -1,9 +1,10 @@
 class Register {
-    constructor(id, operation, max_ex_time, a=null, b=null, time = null){
+    constructor(id, operation, max_ex_time, a=null, b=null, time = null, blockedTime = 7){
         this.id = id
         this.operation = operation
         this.max_ex_time = parseInt(max_ex_time)
         this.time = time
+        this.blockedTime = blockedTime
     }
 }
 
