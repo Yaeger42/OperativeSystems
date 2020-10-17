@@ -2,6 +2,7 @@
 var registers = []
 var finishedList = []
 var awaitingList = []
+var lockedList = []
 var executingRegister = new Register()
 var isExecuting = false
 var activeLot = false
@@ -322,36 +323,18 @@ function continueTimer() {
 function totalForms() {
 
     processes = parseInt(document.getElementById("processes").value )
-    // This wasn't needed for P4, but may be useful for debugging purposes
-    //let a = parseInt(document.getElementById("a").value)
-    //let b = parseInt(document.getElementById("b").value)
-    //let x = parseInt(document.getElementById("operation").value)
+
     if (processes % 4  === 0){
         totalLots = processes/4
     }
     else{
         totalLots = parseInt((processes/4) +1)
     }
-    /*
-    This wasn't needed anymore for the requirements of P4, however it might work for debugging purposes
 
-    if((x === 4 || x===5) && (a === 0 || b === 0)){
-        alert("Division by 0 is not allowed")
-        return
-    }
-    
-    register = new Register ()
-    register.id = id
-    register.operation = getOperationsResult(a, b, x)
-    register.max_ex_time = getRandomExTime()
-    registers.push(register)
-    document.getElementById("register").reset()
-    document.getElementById("processes").style.visibility = "hidden";
-    id += 1
-    */
     if (registers.length === processes) {
         document.getElementById("register").style.display="none";
         document.getElementById("processDiv-p").style.display="none";
+        document.getElementById("processDiv").style.display = "none";
         calcOverallTime()
         document.getElementById("timer").style.visibility = "visible";
         document.getElementById("lots-total").style.visibility = "visible"
