@@ -2,7 +2,7 @@
 var registers = []
 var finishedList = []
 var awaitingList = []
-var lockedList = []
+var blockedList = []
 var executingRegister = new Register()
 var isExecuting = false
 var activeLot = false
@@ -58,6 +58,19 @@ function sendToAwaitingList() {
         executingRegister = new Register ()
     }  
 }
+
+function sendToBlockedList() {
+    blockedList.push(executingRegister)
+    executingRegister = awaitingList[0]
+    awaitingList.shift()
+    fillWaitRow(awaitingList)
+    fillExecutionRow(executingRegister)
+    fillBlockedList(blockedList)
+    //ToDo -- Validate the executing time of the blocked list .., the blockedList[0] will be the one to always come out on top
+}
+
+
+
 // Also finishes the "execution"
 function sendProcessToError(){
 
@@ -186,6 +199,21 @@ function fillWaitRow(awaitingList){
        `
     }
     document.getElementById("Awaiting").innerHTML = awaitingTable
+}
+
+function fillBlockedList(blockedList) {
+    let blockedTable = ''
+    for(let a = 0; a < blockedList.length; a ++) {
+        blockedTable += `
+        <td>Id: ${blockedTable[a].id}</td>
+        <br>
+        <td>Maximum Execution time: ${blockedList[a].max_ex_time}
+        <td>Blocked time: ${blockedList[a].blockedTime}
+        <p>---------------------</p>
+        <br>
+        `
+    }
+    document.getElementById("Blocked").innerHTML = blockedTable
 }
 
 function fillExecutionRow(executingRegister){
