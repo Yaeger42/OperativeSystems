@@ -9,6 +9,7 @@ var activeLot = false
 var totalLots = 0
 var myInterval = null
 var id = 1
+var isBlocked = false
 var keys = {
     e:69, // The running process will go to the queue
     w:87, //Error - finish the process - error instead of result in finished column
@@ -16,6 +17,13 @@ var keys = {
     c:67 // continue
 }
 var processes
+
+//Finished time: stop setInterval = clearInterval
+//Return time: Finished time - Entry time
+//Response time: flag and timer here
+//Awaiting time: ReturnTime - Service Time
+//Service Time: max_execution_time if the execution was finished -- Done
+
 
 //Generates a Random Operation number to choose between 6 options
 function generateRandomOperation(min = 1, max = 6){
@@ -31,7 +39,7 @@ function generateRandomNumber(min = 5, max = 15){
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-//Generate random registers based on user input number of registers
+//Generates random registers based on user input number of registers
 function generateRegisters(registersNumber) {
     for(let i = 1; i <= registersNumber; i++) {
         reg = new Register()
@@ -40,6 +48,7 @@ function generateRegisters(registersNumber) {
         reg.b = generateRandomNumber()
         reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
         reg.max_ex_time = getRandomExTime()
+        reg.serviceTime = reg.max_ex_time
         registers.push(reg)
     }
 }
@@ -59,20 +68,31 @@ function sendToAwaitingList() {
     }  
 }
 
+function sendToAwaitingFromBlocked(blockedElement) {
+    blockedElement.blockedTime = 7
+    awaitingList.push(blockedElement)
+    blockedList.shift()      
+}
+
+
 function sendToBlockedList() {
+    isBlocked = true
     blockedList.push(executingRegister)
-    executingRegister = awaitingList[0]
-    awaitingList.shift()
-    fillWaitRow(awaitingList)
-    fillExecutionRow(executingRegister)
-    fillBlockedList(blockedList)
-    //ToDo -- Validate the executing time of the blocked list .., the blockedList[0] will be the one to always come out on top
+    if(awaitingList.length > 0){
+        executingRegister = awaitingList[0]
+        awaitingList.shift()
+    }
+    else{
+        isExecuting = false
+        executingRegister = null
+    }
+    updateTable()
 }
 
 
 
 // Also finishes the "execution"
-function sendProcessToError(){
+function sendProcessToError() {
 
     if (awaitingList.length === 0 && isExecuting === true) {
         executingRegister.operation = "Error"
@@ -135,57 +155,6 @@ function getOperationsResult(a, b, option) {
     return result
 }
 
-function updateTable (){    
-    while(awaitingList.length <= 4 && registers.length > 0 &&  !activeLot){
-        if (registers.length === 0 || awaitingList.length === 4){
-            activeLot = true
-            break
-        }
-        awaitingList.push(registers[0])
-        registers.shift()
-    }
-    
-    fillWaitRow(awaitingList)
-    if(isExecuting != true && awaitingList.length > 0){
-        isExecuting = true
-        executingRegister = awaitingList[0]
-        awaitingList.shift()
-        fillExecutionRow(executingRegister)
-    }
-
-    else{
-        fillExecutionRow(executingRegister)
-        if (executingRegister.max_ex_time === 0){
-            isExecuting = false
-            finishedList.push(executingRegister)
-            fillExecutionRow(executingRegister)
-            executingRegister = new Register ()
-        }
-        
-    }
-
-    if (finishedList.length>0) {
-        fillFinishedRow(finishedList)
-        fillExecutionRow(executingRegister)
-    }
-
-    if(awaitingList.length === 0 && isExecuting === false){
-        activeLot = false
-        if(totalLots === 0){
-            totalLots = 0
-        }
-        else{
-            totalLots-=1
-        }
-        document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
-        if(finishedList.length === processes) {
-            clearInterval(myInterval)
-        }
-    }
-
-}
-
-
 // -----------Fill rows functions ----------- //
 function fillWaitRow(awaitingList){
     let awaitingTable = ''
@@ -203,18 +172,23 @@ function fillWaitRow(awaitingList){
 
 function fillBlockedList(blockedList) {
     let blockedTable = ''
-    for(let a = 0; a < blockedList.length; a ++) {
-        blockedTable += `
-        <td>Id: ${blockedTable[a].id}</td>
-        <br>
-        <td>Maximum Execution time: ${blockedList[a].max_ex_time}
-        <td>Blocked time: ${blockedList[a].blockedTime}
-        <p>---------------------</p>
-        <br>
-        `
+    if(isBlocked){
+        for(let a = 0; a < blockedList.length; a ++) {
+            blockedTable += `
+            <td>Id: ${blockedList[a].id}</td>
+            <br>
+            <td>Maximum Execution time: ${blockedList[a].max_ex_time}
+            <td>Blocked time: ${blockedList[a].blockedTime}
+            <p>---------------------</p>
+            <br>`
+        }
+        document.getElementById("Blocked").innerHTML = blockedTable
     }
-    document.getElementById("Blocked").innerHTML = blockedTable
+    else{
+        document.getElementById("Blocked").innerHTML = blockedTable
+    }
 }
+
 
 function fillExecutionRow(executingRegister){
     let executingTable = ''
@@ -232,19 +206,30 @@ function fillExecutionRow(executingRegister){
     }
 }
 
+//<td>Finished time: ${finishedList[a].finishedTime = finishedTime(myInterval)}
 
 function fillFinishedRow(finishedList){
     let finishedTable = ''
     for(let a = 0; a<finishedList.length; a++){
+        if (finishedList[a].max_ex_time != 'Error'){
         finishedTable += ` 
             <td>Id: ${finishedList[a].id} </td> 
             <br>
             <td>Operation: ${finishedList[a].a}    ${finishedList[a].b} ${finishedList[a].operation}    </td>
             <br>
+            <td>Service Time: ${finishedList[a].serviceTime} </td>
             <p>---------------------</p>` // Modified the way it showed the operations result to match requirement
-    }
-
+        }
+        else{
+            finishedTable += ` 
+            <td>Id: ${finishedList[a].id} </td> 
+            <br>
+            <td>Operation: ${finishedList[a].a}    ${finishedList[a].b} ${finishedList[a].operation}    </td>
+            <br>
+            <p>---------------------</p>` // Modified the way it showed the operations result to match requirement
+        }
     document.getElementById("Finished").innerHTML = finishedTable
+    }
 }
 
 function clearTable() {
@@ -254,6 +239,67 @@ function clearTable() {
 }
 
 // -----------Fill rows functions end ----------- //
+
+function updateTable (){    
+    while(awaitingList.length <= 4 && registers.length > 0 &&  !activeLot){
+        if (registers.length === 0 || awaitingList.length === 4){
+            activeLot = true
+            break
+        }
+        awaitingList.push(registers[0])
+        registers.shift()
+    }
+    
+    fillWaitRow(awaitingList)
+
+    if(isExecuting != true && awaitingList.length > 0){
+        isExecuting = true
+        executingRegister = awaitingList[0]
+        awaitingList.shift()
+        fillExecutionRow(executingRegister)
+    }
+
+    else{
+        fillExecutionRow(executingRegister)
+        if(isExecuting === true ){
+            if (executingRegister.max_ex_time === 0){
+                isExecuting = false
+                finishedList.push(executingRegister)
+                fillExecutionRow(executingRegister)
+                executingRegister = null
+                new Register ()
+            }
+        }
+    }
+
+    if (finishedList.length>0) {
+        fillFinishedRow(finishedList)
+        fillExecutionRow(executingRegister)
+    }
+
+    if(blockedList.length > 0) {
+        fillBlockedList(blockedList)
+    }
+    else{
+        fillBlockedList(blockedList)
+    }
+
+    if(awaitingList.length === 0 && isExecuting === false){
+        activeLot = false
+        if(totalLots === 0){
+            totalLots = 0
+        }
+        else{
+            totalLots-=1
+        }
+        //document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
+        if(finishedList.length === processes) {
+            clearInterval(myInterval)
+        }
+    }
+
+}
+
 
 function calcOverallTime() {
     let overallTime = 0
@@ -277,6 +323,14 @@ function setTime() {
     minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60))
     if (isExecuting) {
         executingRegister.max_ex_time --
+    }
+    if(isBlocked) {
+        for(let i = 0; i < blockedList.length; i++) {
+            blockedList[i].blockedTime --
+            if(blockedList[i].blockedTime === 0){
+                sendToAwaitingFromBlocked(blockedList[i])
+            }
+        }
     }
     updateTable()
 }
@@ -328,8 +382,8 @@ function totalForms() {
         document.getElementById("processDiv").style.display = "none";
         calcOverallTime()
         document.getElementById("timer").style.visibility = "visible";
-        document.getElementById("lots-total").style.visibility = "visible"
-        document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
+        //document.getElementById("lots-total").style.visibility = "visible"
+        //document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
         document.getElementById("process-table").style.visibility="visible"
         myInterval = setInterval(setTime, 1000)
     }
@@ -339,8 +393,8 @@ function totalForms() {
         switch(event.keyCode){
     
             case keys.e:
-                console.log("E was pressed - Process was send to the Queue")
-                sendToAwaitingList()
+                console.log("E was pressed - Process was send to the blocked queue")
+                sendToBlockedList()
                 break
             
             case keys.w:
@@ -361,4 +415,3 @@ function totalForms() {
     }
     
 }
-// ----------- Main function End -----------//
