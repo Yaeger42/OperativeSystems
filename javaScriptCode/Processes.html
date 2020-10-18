@@ -17,22 +17,6 @@
   
   <div id="formDiv">
     <form id ="register">
-      <!-- Commented an unnecesary requirement
-      <br>
-        1. Add <br>
-        2. Multiply <br>
-        3. Subtract <br>
-        4. Divide <br>
-        5. Modulo <br>
-        6. Power <br>
-        <p>Enter the corresponding number to the operation</p>
-        <input type="number" id="operation" placeholder="Operation">
-        <p>First value</p>
-        <input type="number" id="a" placeholder="First value">
-        <p>Second value</p>
-        <input type="number" id="b" placeholder="Second value">
-      </p>
-      -->
       <input type="button" id="registerbutton" value="Submit" onclick="totalForms();">
     </form>
   </div>
@@ -48,23 +32,25 @@
       <label class="timer-m"id="timer-minutes">00</label>:<label class="timer-s"id="timer-seconds">00</label>
     </div>
 
+    <!--
     <div class="lots" style="visibility: hidden;">
       <p class="lots-total" id ="lots-total"></p>
     </div>
-
+    -->
+    
     <div class="process-table">
       <table class="table" style="width: 75%; visibility: hidden;" id="process-table">
         <tr>
-          <th>Blocked</th>
-          <th>Awaiting</th>
+          <th>Ready</th>
           <th>Execution</th>
           <th>Finished</th>
+          <th>Blocked</th>
         </tr>
         <tr>
           <td id="Awaiting">All processes</td>
-          <td id ="Blocked">Blocked</td>
           <td id="Execution">Execution</td>
           <td id="Finished">Finished</td>
+          <td id ="Blocked">Blocked</td>
         </tr>
       </table>
     </div>
