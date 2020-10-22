@@ -1,6 +1,6 @@
 class Register {
     constructor(id, operation, max_ex_time, a=null, b=null, finishedTime = null, blockedTime = 7, 
-        returnTime = null, responseFlag = false, responseTime = 0, startTime = null, serviceTime,
+        returnTime = null, responseFlag = false, responseTime = null, startTime = null, serviceTime,
         awaitingTime = null){
         this.id = id
         this.operation = operation

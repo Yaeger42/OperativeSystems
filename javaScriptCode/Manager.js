@@ -51,6 +51,8 @@ function awaitingTime(returnTime, serviceTime){
     }
 }
 
+//When the process enters to ready list until it's attended for the first time
+
 // ------------------------Object time calculations end here ------------------------ //
 
 //Generates a Random Operation number to choose between 6 options
@@ -207,12 +209,16 @@ function fillWaitRow(awaitingList){
 function fillExecutionRow(executingRegister){
     let executingTable = ''
     if(isExecuting) {
-    executingTable += `
+        if(executingRegister.responseTime == null){
+            executingRegister.responseTime = executingRegister.startTime + globalSeconds
+        }
+        executingTable += `
         <td>Id: ${executingRegister.id} </td> 
         <br>
         <td>Maximum Execution time: ${executingRegister.max_ex_time}</td>
-        <br> `
-    document.getElementById("Execution").innerHTML = executingTable
+        <br> 
+        <td>Response time:${executingRegister.responseTime}`
+        document.getElementById("Execution").innerHTML = executingTable
     }
     else{
         executingTable = ''
@@ -237,13 +243,16 @@ function fillFinishedRow(finishedList){
             <br>
             <td>Service Time: ${finishedList[a].serviceTime} </td>
             <br>
-            <td>Start time: ${finishedList[a].startTime} </td>
+            <td>Start Time: ${finishedList[a].startTime} </td>
             <br>
-            <td>Finished time: ${finishedList[a].finishedTime} </td>
+            <td>Finished Time: ${finishedList[a].finishedTime} </td>
             <br>
-            <td>Return time: ${finishedList[a].returnTime = returnTime(finishedList[a].startTime, finishedList[a].finishedTime)}</td>
+            <td>Return Time: ${finishedList[a].returnTime = returnTime(finishedList[a].startTime, finishedList[a].finishedTime)}</td>
             <br>
-            <td>Awaiting Time: ${finishedList[a].awaitingTime = awaitingTime(finishedList[a].returnTime, finishedList[a].serviceTime)}
+            <td>Awaiting Time: ${finishedList[a].awaitingTime = awaitingTime(finishedList[a].returnTime, finishedList[a].serviceTime)}</td>
+            <br>
+            <td>Response Time: ${finishedList[a].responseTime} </td>
+            <br>
             <p>---------------------</p>` // Modified the way it showed the operations result to match requirement
         }
         else{
