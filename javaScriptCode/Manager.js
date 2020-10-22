@@ -49,6 +49,7 @@ function generateRegisters(registersNumber) {
         reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
         reg.max_ex_time = getRandomExTime()
         reg.serviceTime = reg.max_ex_time
+        reg.startTime =  minutesLabel.value + secondsLabel.value
         registers.push(reg)
     }
 }
@@ -163,6 +164,8 @@ function fillWaitRow(awaitingList){
         <td>Id: ${awaitingList[a].id} </td> 
        <br>
        <td>Maximum Execution time: ${awaitingList[a].max_ex_time}</td>
+       <br>
+       <td>Start time: ${awaitingList[a].startTime}</td>
        <p>---------------------</p>
        <br>
        `
@@ -382,8 +385,6 @@ function totalForms() {
         document.getElementById("processDiv").style.display = "none";
         calcOverallTime()
         document.getElementById("timer").style.visibility = "visible";
-        //document.getElementById("lots-total").style.visibility = "visible"
-        //document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
         document.getElementById("process-table").style.visibility="visible"
         myInterval = setInterval(setTime, 1000)
     }
