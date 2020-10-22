@@ -10,6 +10,7 @@ var totalLots = 0
 var myInterval = null
 var id = 1
 var isBlocked = false
+var globalSeconds = 0
 var keys = {
     e:69, // The running process will go to the queue
     w:87, //Error - finish the process - error instead of result in finished column
@@ -18,12 +19,39 @@ var keys = {
 }
 var processes
 
-//Finished time: stop setInterval = clearInterval
-//Return time: Finished time - Entry time
 //Response time: flag and timer here
-//Awaiting time: ReturnTime - Service Time
 //Service Time: max_execution_time if the execution was finished -- Done
 
+// ------------------------Object time calculations start here ------------------------ //
+// Calculates de return time based on the formula:
+//Return time: Finished time - Entry time
+function returnTime(startTime, finishedTime) {
+    rTime = null
+    if(startTime != null && finishedTime != null){
+        rTime = finishedTime - startTime
+        return rTime
+    }
+    else{
+        rTime = "Error"
+        return rTime
+    }
+}
+
+// Calculates de awaiting time based on the formula:
+//Awaiting time: ReturnTime - Service Time
+function awaitingTime(returnTime, serviceTime){
+    awTime = null
+    if(returnTime != null && serviceTime != null) {
+        awTime = returnTime - serviceTime
+        return awTime
+    }
+    else{
+        awTime = "Error"
+        return awTime
+    }
+}
+
+// ------------------------Object time calculations end here ------------------------ //
 
 //Generates a Random Operation number to choose between 6 options
 function generateRandomOperation(min = 1, max = 6){
@@ -49,7 +77,6 @@ function generateRegisters(registersNumber) {
         reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
         reg.max_ex_time = getRandomExTime()
         reg.serviceTime = reg.max_ex_time
-        reg.startTime =  minutesLabel.value + secondsLabel.value
         registers.push(reg)
     }
 }
@@ -106,6 +133,7 @@ function sendProcessToError() {
     if(awaitingList.length > 0 && isExecuting == true){
         executingRegister.operation = "Error"
         executingRegister.max_ex_time = "Error"
+        executingRegister.finishedTime = "Error"
         finishedList.push(executingRegister)
         executingRegister = awaitingList [0]
         awaitingList.shift()
@@ -159,39 +187,22 @@ function getOperationsResult(a, b, option) {
 // -----------Fill rows functions ----------- //
 function fillWaitRow(awaitingList){
     let awaitingTable = ''
-    for(let a = 0; a < awaitingList.length; a++){ 
+    for(let a = 0; a < awaitingList.length; a++){
+        // If the start time is null, assign globalSeconds value to startTime
+        if(awaitingList[a].startTime == null){
+            awaitingList[a].startTime = globalSeconds
+        }
         awaitingTable += `
         <td>Id: ${awaitingList[a].id} </td> 
-       <br>
-       <td>Maximum Execution time: ${awaitingList[a].max_ex_time}</td>
-       <br>
-       <td>Start time: ${awaitingList[a].startTime}</td>
-       <p>---------------------</p>
-       <br>
-       `
+        <br>
+        <td>Maximum Execution time: ${awaitingList[a].max_ex_time}</td>
+        <br>
+        <td>Start Time: ${awaitingList[a].startTime}</td>
+        <p>---------------------</p>
+        <br> `
     }
     document.getElementById("Awaiting").innerHTML = awaitingTable
 }
-
-function fillBlockedList(blockedList) {
-    let blockedTable = ''
-    if(isBlocked){
-        for(let a = 0; a < blockedList.length; a ++) {
-            blockedTable += `
-            <td>Id: ${blockedList[a].id}</td>
-            <br>
-            <td>Maximum Execution time: ${blockedList[a].max_ex_time}
-            <td>Blocked time: ${blockedList[a].blockedTime}
-            <p>---------------------</p>
-            <br>`
-        }
-        document.getElementById("Blocked").innerHTML = blockedTable
-    }
-    else{
-        document.getElementById("Blocked").innerHTML = blockedTable
-    }
-}
-
 
 function fillExecutionRow(executingRegister){
     let executingTable = ''
@@ -214,6 +225,10 @@ function fillExecutionRow(executingRegister){
 function fillFinishedRow(finishedList){
     let finishedTable = ''
     for(let a = 0; a<finishedList.length; a++){
+        // If the finished time is null, assign globalSeconds value to finishedTime
+        if(finishedList[a].finishedTime == null){
+            finishedList[a].finishedTime = globalSeconds
+        }
         if (finishedList[a].max_ex_time != 'Error'){
         finishedTable += ` 
             <td>Id: ${finishedList[a].id} </td> 
@@ -221,6 +236,14 @@ function fillFinishedRow(finishedList){
             <td>Operation: ${finishedList[a].a}    ${finishedList[a].b} ${finishedList[a].operation}    </td>
             <br>
             <td>Service Time: ${finishedList[a].serviceTime} </td>
+            <br>
+            <td>Start time: ${finishedList[a].startTime} </td>
+            <br>
+            <td>Finished time: ${finishedList[a].finishedTime} </td>
+            <br>
+            <td>Return time: ${finishedList[a].returnTime = returnTime(finishedList[a].startTime, finishedList[a].finishedTime)}</td>
+            <br>
+            <td>Awaiting Time: ${finishedList[a].awaitingTime = awaitingTime(finishedList[a].returnTime, finishedList[a].serviceTime)}
             <p>---------------------</p>` // Modified the way it showed the operations result to match requirement
         }
         else{
@@ -229,11 +252,34 @@ function fillFinishedRow(finishedList){
             <br>
             <td>Operation: ${finishedList[a].a}    ${finishedList[a].b} ${finishedList[a].operation}    </td>
             <br>
+            <td>Start time: ${finishedList[a].startTime} </td>
+            <td>Finished time: ${finishedList[a].finishedTime} </td>
             <p>---------------------</p>` // Modified the way it showed the operations result to match requirement
         }
     document.getElementById("Finished").innerHTML = finishedTable
     }
 }
+
+function fillBlockedList(blockedList) {
+    let blockedTable = ''
+    if(isBlocked){
+        for(let a = 0; a < blockedList.length; a ++) {
+            blockedTable += `
+            <td>Id: ${blockedList[a].id}</td>
+            <br>
+            <td>Maximum Execution time: ${blockedList[a].max_ex_time}
+            <td>Blocked time: ${blockedList[a].blockedTime}
+            <p>---------------------</p>
+            <br>`
+        }
+        document.getElementById("Blocked").innerHTML = blockedTable
+    }
+    else{
+        document.getElementById("Blocked").innerHTML = blockedTable
+    }
+}
+
+
 
 function clearTable() {
     document.getElementById("Awaiting").innerHTML = ''
@@ -322,6 +368,7 @@ var timer_is_executing = false
 function setTime() {
     timer_is_executing = true
     ++totalSeconds
+    ++globalSeconds
     secondsLabel.innerHTML = pad(totalSeconds % 60)
     minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60))
     if (isExecuting) {
