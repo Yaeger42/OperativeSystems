@@ -12,10 +12,11 @@ var id = 1
 var isBlocked = false
 var globalSeconds = 0
 var keys = {
-    e:69, // The running process will go to the queue
-    w:87, //Error - finish the process - error instead of result in finished column
-    p:80, //pause 
-    c:67 // continue
+    e: 69, // The running process will go to the queue
+    w: 87, //Error - finish the process - error instead of result in finished column
+    p: 80, //pause 
+    c: 67, // continue
+    n: 78
 }
 var processes
 
@@ -82,6 +83,22 @@ function generateRegisters(registersNumber) {
         registers.push(reg)
     }
 }
+
+
+function generateRegister() {
+    let i = awaitingList.length
+    //let reg = new Register(id, operation, max_ex_time, a=null, b=null, finishedTime = null, blockedTime = 7, 
+    //    returnTime = null, responseFlag = false, responseTime = null, startTime = null, serviceTime,
+    //    awaitingTime = null)
+    reg.id = awaitingList[i].id + 1
+    reg.a = generateRandomOperation()
+    reg.b = generateRandomNumber()
+    reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
+    reg.max_ex_time = getRandomExTime()
+    reg.serviceTime = reg.max_ex_time
+    registers.push(reg)
+}
+
 
 function sendToAwaitingList() {
    awaitingList.push(executingRegister)
@@ -455,7 +472,7 @@ function totalForms() {
                 break
             
             case keys.w:
-                console.log ("W was pressed - Process was send to error")
+                console.log ("W was pressed - Process was send to finished processes due to an error")
                 sendProcessToError()
                 break;
     
@@ -467,6 +484,11 @@ function totalForms() {
             case keys.c:
                 console.log("C was pressed - Continue")
                 continueTimer()
+                break
+            
+            case keys.n:
+                console.log("N was pressed - New register added")
+                generateRegister()
                 break
         }
     }
