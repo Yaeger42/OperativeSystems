@@ -86,16 +86,12 @@ function generateRegisters(registersNumber) {
 
 
 function generateRegister() {
-    let i = awaitingList.length
-    //let reg = new Register(id, operation, max_ex_time, a=null, b=null, finishedTime = null, blockedTime = 7, 
-    //    returnTime = null, responseFlag = false, responseTime = null, startTime = null, serviceTime,
-    //    awaitingTime = null)
-    reg.id = awaitingList[i].id + 1
-    reg.a = generateRandomOperation()
-    reg.b = generateRandomNumber()
-    reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
-    reg.max_ex_time = getRandomExTime()
-    reg.serviceTime = reg.max_ex_time
+    let i = awaitingList.length - 1
+    var reg = new Register(awaitingList[i].id +1, 
+        generateRandomOperation(), 
+        getRandomExTime(), 
+        generateRandomOperation(), 
+        generateRandomNumber())
     registers.push(reg)
 }
 

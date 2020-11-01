@@ -1,13 +1,12 @@
 class Register {
     constructor(id, operation, max_ex_time, a=null, b=null, finishedTime = null, blockedTime = 7, 
-        returnTime = null, responseFlag = false, responseTime = null, startTime = null, serviceTime,
+        returnTime = null, responseTime = null, startTime = null, serviceTime,
         awaitingTime = null){
         this.id = id
         this.operation = operation
         this.max_ex_time = parseInt(max_ex_time)
         this.finishedTime = finishedTime
         this.blockedTime = blockedTime
-        this.responseFlag = responseFlag
         this.responseTime = responseTime
         this.startTime = startTime
         this.serviceTime = serviceTime
