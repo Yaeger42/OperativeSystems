@@ -16,12 +16,11 @@ var keys = {
     w: 87, //Error - finish the process - error instead of result in finished column
     p: 80, //pause 
     c: 67, // continue
-    n: 78
+    n: 78,
+    t: 84
 }
 var processes
-
-//Response time: flag and timer here
-//Service Time: max_execution_time if the execution was finished -- Done
+var bcpActive = false // Flag to check BCP
 
 // ------------------------Object time calculations start here ------------------------ //
 // Calculates de return time based on the formula:
@@ -46,10 +45,10 @@ function awaitingTime(returnTime, serviceTime){
         awTime = returnTime - serviceTime
         return awTime
     }
-    else{
-        awTime = "Error"
-        return awTime
-    }
+    //else{
+      //  awTime = "Error"
+        //return awTime
+    //}
 }
 
 //When the process enters to ready list until it's attended for the first time
@@ -87,12 +86,54 @@ function generateRegisters(registersNumber) {
 
 function generateRegister() {
     let i = awaitingList.length - 1
-    var reg = new Register(awaitingList[i].id +1, 
-        generateRandomOperation(), 
-        getRandomExTime(), 
-        generateRandomOperation(), 
-        generateRandomNumber())
+    var reg = new Register()
+    reg.id = awaitingList[i].id +1
+    reg.a = generateRandomOperation()
+    reg.b = generateRandomNumber()
+    reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation()) 
+    reg.max_ex_time = getRandomExTime()
+    reg.serviceTime = reg.max_ex_time
     registers.push(reg)
+    processes +=1
+}
+
+function showBcp () {
+    let awaitingTable  = ''
+    let executingTable = ''
+    if(!bcpActive) {
+        bcpActive = true
+        stopTimer()
+        if(awaitingList.length > 0){
+            for(let i = 0; i < awaitingList.length; i++){
+            awaitingTable += ` 
+                <td>Id: ${awaitingList[i].id} </td> 
+                <br>
+                <td>Operation: ${awaitingList[i].a}    ${awaitingList[i].b} ${awaitingList[i].operation}    </td>
+                <br>
+                <td>Start Time: ${awaitingList[i].startTime} </td>
+                <br>
+                <td>Service Time: ${awaitingList[i].serviceTime} </td>
+                <br>
+                <p>---------------------</p>`
+            } 
+        document.getElementById("Awaiting").innerHTML = awaitingTable
+        }
+        if(isExecuting) {
+            executingTable = `
+                <td>Id: ${executingRegister.id} </td>
+                <br>
+                <td>Operation: ${executingRegister.a}  ${executingRegister.b} ${executingRegister.operation}</td>
+                <br>
+                <td>Service time: ${executingRegister.serviceTime} </td>
+                <br>
+                <td>Start time: ${executingRegister.startTime} </td>
+                <br>
+                <td>Remaining time: ${executingRegister.max_ex_time}
+                <p>---------------------</p>`
+
+            document.getElementById("Execution").innerHTML = executingTable
+        }
+    }
 }
 
 
@@ -356,6 +397,9 @@ function updateTable (){
     }
 
     if(awaitingList.length === 0 && isExecuting === false){
+        if(finishedList.length === processes) {
+            clearInterval(myInterval)
+        }
         activeLot = false
         if(totalLots === 0){
             totalLots = 0
@@ -364,9 +408,7 @@ function updateTable (){
             totalLots-=1
         }
         //document.getElementById("lots-total").innerHTML = `Total lots: ${totalLots}`
-        if(finishedList.length === processes) {
-            clearInterval(myInterval)
-        }
+
     }
 
 }
@@ -428,6 +470,7 @@ function stopTimer() {
 function continueTimer() {
     if(!timer_is_executing) {
         timer_is_executing = true
+        bcpActive = false
         myInterval = setInterval(setTime, 1000)
     }
 }
@@ -485,6 +528,11 @@ function totalForms() {
             case keys.n:
                 console.log("N was pressed - New register added")
                 generateRegister()
+                break
+
+            case keys.t:
+                console.log("T was pressed - Showing BCPs")
+                showBcp()
                 break
         }
     }
