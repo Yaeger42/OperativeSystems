@@ -21,6 +21,9 @@ var keys = {
 }
 var processes
 var bcpActive = false // Flag to check BCP
+var quantum 
+
+
 
 // ------------------------Object time calculations start here ------------------------ //
 // Calculates de return time based on the formula:
@@ -45,10 +48,7 @@ function awaitingTime(returnTime, serviceTime){
         awTime = returnTime - serviceTime
         return awTime
     }
-    //else{
-      //  awTime = "Error"
-        //return awTime
-    //}
+
 }
 
 //When the process enters to ready list until it's attended for the first time
@@ -481,7 +481,7 @@ function continueTimer() {
 function totalForms() {
 
     processes = parseInt(document.getElementById("processes").value )
-   
+    quantum = parseInt(document.getElementById("quantums").value)
 
     if (processes % 4  === 0){
         totalLots = processes/4
@@ -495,6 +495,7 @@ function totalForms() {
         document.getElementById("register").style.display="none";
         document.getElementById("processDiv-p").style.display="none";
         document.getElementById("processDiv").style.display = "none";
+        document.getElementById("quantumsDiv").style.display = "none";
         calcOverallTime()
         document.getElementById("timer").style.visibility = "visible";
         document.getElementById("process-table").style.visibility="visible"
