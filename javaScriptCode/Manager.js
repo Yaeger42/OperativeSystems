@@ -21,7 +21,8 @@ var keys = {
 }
 var processes
 var bcpActive = false // Flag to check BCP
-var quantum 
+var globalQuantum 
+var quantumCounter
 
 
 
@@ -422,6 +423,20 @@ function calcOverallTime() {
     document.getElementById("Registers-Overalltime").innerHTML = `Overall time: ${overallTime}`
 }
 
+function calculateQuantum(quantum) {
+    quantumCounter --
+    document.getElementById("Quantum-p-counter").innerHTML = `Current quantum: ${quantumCounter}`
+    if(quantumCounter === 0) {
+        awaitingList.push(executingRegister);
+        executingRegister = awaitingList[0]
+        awaitingList.shift()
+        quantumCounter = globalQuantum
+        updateTable()
+    }
+}
+
+
+
 
 // -----------Clock functions start-----------//
 var minutesLabel = document.getElementById("timer-minutes")
@@ -437,6 +452,7 @@ function setTime() {
     minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60))
     if (isExecuting) {
         executingRegister.max_ex_time --
+        calculateQuantum(quantumCounter)
     }
     if(isBlocked) {
         for(let i = 0; i < blockedList.length; i++) {
@@ -481,7 +497,11 @@ function continueTimer() {
 function totalForms() {
 
     processes = parseInt(document.getElementById("processes").value )
-    quantum = parseInt(document.getElementById("quantums").value)
+    globalQuantum = parseInt(document.getElementById("quantums").value)
+    quantumCounter = globalQuantum
+    document.getElementById("Quantum-P-value").innerHTML = `Quantum value: ${globalQuantum}`
+    calculateQuantum(quantumCounter)
+    
 
     if (processes % 4  === 0){
         totalLots = processes/4
@@ -492,13 +512,14 @@ function totalForms() {
     generateRegisters(processes)
 
     if (registers.length === processes) {
-        document.getElementById("register").style.display="none";
-        document.getElementById("processDiv-p").style.display="none";
-        document.getElementById("processDiv").style.display = "none";
-        document.getElementById("quantumsDiv").style.display = "none";
+        document.getElementById("register").style.display="none"
+        document.getElementById("processDiv-p").style.display="none"
+        document.getElementById("processDiv").style.display = "none"
+        document.getElementById("quantumsDiv").style.display = "none"
         calcOverallTime()
-        document.getElementById("timer").style.visibility = "visible";
+        document.getElementById("timer").style.visibility = "visible"
         document.getElementById("process-table").style.visibility="visible"
+        document.getElementById("quantumDisplay").style.visibility="visible"
         myInterval = setInterval(setTime, 1000)
     }
     // Detecting key presses
