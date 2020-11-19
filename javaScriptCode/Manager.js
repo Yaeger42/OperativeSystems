@@ -24,7 +24,7 @@ var bcpActive = false // Flag to check BCP
 var globalQuantum 
 var quantumCounter
 
-
+var globalId = 0
 
 // ------------------------Object time calculations start here ------------------------ //
 // Calculates de return time based on the formula:
@@ -74,7 +74,8 @@ function generateRandomNumber(min = 5, max = 15){
 function generateRegisters(registersNumber) {
     for(let i = 1; i <= registersNumber; i++) {
         reg = new Register()
-        reg.id = i 
+        reg.id = i
+        globalId +=1  
         reg.a = generateRandomOperation()
         reg.b = generateRandomNumber()
         reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation())
@@ -86,9 +87,10 @@ function generateRegisters(registersNumber) {
 
 
 function generateRegister() {
+    globalId += 1
     let i = awaitingList.length - 1
     var reg = new Register()
-    reg.id = awaitingList[i].id +1
+    reg.id = globalId
     reg.a = generateRandomOperation()
     reg.b = generateRandomNumber()
     reg.operation = getOperationsResult(reg.a, reg.b, generateRandomOperation()) 
